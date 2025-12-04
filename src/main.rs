@@ -133,12 +133,13 @@ fn switch(routes: Route) -> Html {
 #[function_component(App)]
 fn app() -> Html {
     html! {
-        <BrowserRouter>
+        <HashRouter>
             <Switch<Route> render={switch} />
-        </BrowserRouter>
+        </HashRouter>
     }
 }
 
 fn main() {
+    console_error_panic_hook::set_once();
     yew::Renderer::<App>::new().render();
 }
