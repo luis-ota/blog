@@ -1,0 +1,7 @@
+[build]
+target = "index.html"
+
+[[hooks]]
+stage = "pre_build"
+command = "bun"
+command_arguments = ["x", "tailwindcss", "-i", "input.css", "-o", "style.css"]
