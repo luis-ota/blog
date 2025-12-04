@@ -29,7 +29,7 @@ fn home() -> Html {
         use_effect_with((), move |_| {
             let posts = posts.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                if let Ok(response) = Request::get("/posts.json").send().await {
+                if let Ok(response) = Request::get("posts.json").send().await {
                     if let Ok(fetched_posts) = response.json::<Vec<PostMeta>>().await {
                         posts.set(fetched_posts);
                     }
@@ -74,7 +74,7 @@ fn post_viewer(props: &PostProps) -> Html {
         let slug = slug.clone();
         use_effect_with(slug.clone(), move |_| {
             wasm_bindgen_futures::spawn_local(async move {
-                let url = format!("/posts/{}/{}.md", slug, slug);
+                let url = format!("posts/{}/{}.md", slug, slug);
                 if let Ok(response) = Request::get(&url).send().await {
                     if let Ok(text) = response.text().await {
                         let mut options = pulldown_cmark::Options::empty();
@@ -83,7 +83,7 @@ fn post_viewer(props: &PostProps) -> Html {
                         let parser = parser.map(|event| match event {
                             Event::Start(Tag::Image { link_type, dest_url, title, id }) => {
                                 if !dest_url.starts_with("http") && !dest_url.starts_with("/") {
-                                    let new_dest = format!("/posts/{}/{}", slug, dest_url);
+                                    let new_dest = format!("posts/{}/{}", slug, dest_url);
                                     Event::Start(Tag::Image {
                                         link_type,
                                         dest_url: CowStr::from(new_dest),

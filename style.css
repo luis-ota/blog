@@ -164,12 +164,6 @@
   }
 }
 @layer utilities {
-  .absolute {
-    position: absolute;
-  }
-  .fixed {
-    position: fixed;
-  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -190,9 +184,6 @@
   }
   .contents {
     display: contents;
-  }
-  .table {
-    display: table;
   }
   .text-5xl {
     font-size: var(--text-5xl);
