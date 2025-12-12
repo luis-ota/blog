@@ -1,33 +1,18 @@
+use crate::components::router::Route;
 use gloo_net::http::Request;
+use gloo_utils::document;
 use pulldown_cmark::{CowStr, Event, Parser, Tag, html};
-use serde::Deserialize;
+use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::components::{header::Header, home::Home};
-
-mod components;
-mod lib;
-mod models;
-
-#[derive(Clone, Routable, PartialEq)]
-enum Route {
-    #[at("/")]
-    Home,
-    #[at("/post/:slug")]
-    Post { slug: String },
-    #[not_found]
-    #[at("/404")]
-    NotFound,
-}
-
 #[derive(Properties, PartialEq)]
-struct PostProps {
-    slug: String,
+pub struct PostProps {
+    pub slug: String,
 }
 
 #[function_component(PostViewer)]
-fn post_viewer(props: &PostProps) -> Html {
+pub fn post_viewer(props: &PostProps) -> Html {
     let content = use_state(|| String::new());
     let slug = props.slug.clone();
 
@@ -35,12 +20,13 @@ fn post_viewer(props: &PostProps) -> Html {
         let content = content.clone();
         let slug = slug.clone();
         use_effect_with(slug.clone(), move |_| {
-            wasm_bindgen_futures::spawn_local(async move {
+            spawn_local(async move {
                 let url = format!("posts/{}/{}.md", slug, slug);
                 if let Ok(response) = Request::get(&url).send().await {
                     if let Ok(text) = response.text().await {
                         let mut options = pulldown_cmark::Options::empty();
                         options.insert(pulldown_cmark::Options::ENABLE_TABLES);
+
                         let parser = Parser::new_ext(&text, options);
                         let parser = parser.map(|event| match event {
                             Event::Start(Tag::Image {
@@ -68,6 +54,7 @@ fn post_viewer(props: &PostProps) -> Html {
                             }
                             _ => event,
                         });
+
                         let mut html_output = String::new();
                         html::push_html(&mut html_output, parser);
                         content.set(html_output);
@@ -78,41 +65,18 @@ fn post_viewer(props: &PostProps) -> Html {
         });
     }
 
-    let div = gloo_utils::document().create_element("div").unwrap();
+    let div = document().create_element("div").unwrap();
     div.set_inner_html(&*content);
     let node = Html::VRef(div.into());
 
     html! {
         <div class="post-container">
             <nav>
-                <Link<Route> to={Route::Home}>{"Back to Home" }</Link<Route>>
+                <Link<Route> to={Route::Home}>{"Back to Home"}</Link<Route>>
             </nav>
             <article class="markdown-body">
                 { node }
             </article>
         </div>
     }
-}
-
-fn switch(routes: Route) -> Html {
-    match routes {
-        Route::Home => html! { <Home /> },
-        Route::Post { slug } => html! { <PostViewer slug={slug} /> },
-        Route::NotFound => html! { <h1>{ "404 Not Found" }</h1> },
-    }
-}
-
-#[function_component(App)]
-fn app() -> Html {
-    html! {
-        <HashRouter>
-            <Header />
-            <Switch<Route> render={switch} />
-        </HashRouter>
-    }
-}
-
-fn main() {
-    console_error_panic_hook::set_once();
-    yew::Renderer::<App>::new().render();
 }

@@ -1,6 +1,18 @@
 [
-  { "slug": "first-post", "title": "First Post" },
-  { "slug": "how-to-targz", "title": "How to Tar Gz" },
-  { "slug": "linux-swap", "title": "Linux Swap" },
-  { "slug": "swaptop", "title": "Swaptop" }
+  {
+    "slug": "linux-swap",
+    "title": "How to change linux swap size"
+  },
+  {
+    "slug": "how-to-targz",
+    "title": "how to use tar to compress files"
+  },
+  {
+    "slug": "first-post",
+    "title": "My First Post"
+  },
+  {
+    "slug": "swaptop",
+    "title": "Swaptop, monitor your swap usage in real time"
+  }
 ]

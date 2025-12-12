@@ -2,6 +2,34 @@
 @source "./src/**/*.rs";
 @source "./index.html";
 
+/* Minimal custom CSS for the fichário 3D transforms (used in the Home fichário component)
+   Keep these small helpers here; Tailwind handles the rest via utility classes. */
+.fichario {
+    perspective: 1200px;
+    -webkit-perspective: 1200px;
+}
+
+.folder-tab {
+    transform-origin: left center;
+    transition:
+        transform 350ms ease,
+        box-shadow 250ms ease,
+        background-color 350ms ease;
+    will-change: transform;
+}
+
+/* stacking offset using custom property --i */
+.folder-tab[style*="--i"] {
+    transform: translateZ(calc(-8px * var(--i)))
+        translateY(calc(6px * var(--i))) rotateX(6deg);
+}
+
+/* active state pushed forward */
+.folder-tab.is-active {
+    transform: translateZ(28px) translateY(-12px) rotateX(0deg) scale(1.04);
+    z-index: 50;
+}
+
 :root {
     --bg-color: #0f172a;
     --text-color: #e2e8f0;
@@ -9,7 +37,7 @@
     --secondary-color: #818cf8;
     --card-bg: #1e293b;
     --hover-bg: #334155;
-    --font-main: 'Inter', sans-serif;
+    --font-main: "Inter", sans-serif;
 }
 
 body {
@@ -32,8 +60,6 @@ header {
     margin-bottom: 3rem;
 }
 
-
-
 .post-list {
     list-style: none;
     padding: 0;
@@ -43,7 +69,9 @@ header {
     margin-bottom: 1rem;
     background-color: var(--card-bg);
     border-radius: 8px;
-    transition: transform 0.2s, background-color 0.2s;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
 }
 
 .post-list li:hover {
@@ -105,7 +133,7 @@ nav a:hover {
     background-color: #0f172a;
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
-    font-family: 'Fira Code', monospace;
+    font-family: "Fira Code", monospace;
     font-size: 0.9em;
 }
 

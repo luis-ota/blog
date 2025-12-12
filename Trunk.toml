@@ -1,6 +1,12 @@
 [build]
 target = "index.html"
 
+
+[[hooks]]
+stage = "pre_build"
+command = "bun"
+command_arguments = ["scripts/generate-posts.js"]
+
 [[hooks]]
 stage = "pre_build"
 command = "bun"
